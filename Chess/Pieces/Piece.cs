@@ -12,6 +12,7 @@ namespace Chess.Pieces
         public bool isWhite;
         public int xPostion;
         public int yPostion;
+        public bool canMoveBackwards = true;
 
         public int maxHorizontalMovement;
         public int maxVerticalMovement;

@@ -16,19 +16,9 @@ namespace Chess.Pieces
             this.hasMoved = true;
         }
 
-        public override bool isSemiValidMove(int x, int y)
+        public override List<Move> GetListOfMoves()
         {
-
-
-            var result = false;
-            if (hasMoved)
-            {
-                result = CheckVertical(x, 1);
-            } else
-            {
-                result = CheckVertical(x, 2);
-            }
-            return result;
+            throw new NotImplementedException();
         }
     }
 }

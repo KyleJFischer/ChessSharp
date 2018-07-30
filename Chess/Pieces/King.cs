@@ -11,16 +11,14 @@ namespace Chess.Pieces
             this.isWhite = isWhite;
             this.pointValue = int.MaxValue;
             this.letterRepresentation = 'K';
+            this.maxHorizontalMovement = 1;
+            this.maxVerticalMovement = 1;
+            this.maxDiagonalMovement = 1;
         }
 
         public override List<Move> GetListOfMoves()
         {
             var moves = new List<Move>();
-
-            moves.AddRange(GetHorizontalMoves(1));
-            moves.AddRange(GetVerticalMoves(1));
-            moves.AddRange(GetDiagonalMoves(1));
-
             return moves;
         }
     }

@@ -14,6 +14,10 @@ namespace Chess.Pieces
             this.letterRepresentation = 'N';
         }
 
+        public override List<Move> GetListOfMoves()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

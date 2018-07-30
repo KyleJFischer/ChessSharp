@@ -11,6 +11,8 @@ namespace Chess.Pieces
             this.isWhite = isWhite;
             this.pointValue = 5;
             this.letterRepresentation = 'R';
+            this.maxHorizontalMovement = int.MaxValue;
+            this.maxVerticalMovement = int.MaxValue;
         }
 
         public override List<Move> GetListOfMoves()
