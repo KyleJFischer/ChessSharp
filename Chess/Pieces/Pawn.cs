@@ -6,7 +6,7 @@ namespace Chess.Pieces
 {
     public class Pawn : Piece
     {
-        bool hasMoved;
+        public bool hasMoved;
 
         public Pawn(bool isWhite)
         {
@@ -14,7 +14,6 @@ namespace Chess.Pieces
             this.pointValue = 1;
             this.letterRepresentation = 'P';
             this.hasMoved = false;
-            this.hasCustomMovement = true;
         }
 
 

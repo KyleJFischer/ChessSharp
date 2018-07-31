@@ -4,16 +4,13 @@ using System.Text;
 
 namespace Chess.Pieces
 {
-    class Knight : Piece
+    public class MovePiece : Piece
     {
-
-        public Knight(bool isWhite)
+        public MovePiece(bool isWhite)
         {
             this.isWhite = isWhite;
-            this.pointValue = 3;
-            this.letterRepresentation = 'N';
+            this.pointValue = 0;
+            this.letterRepresentation = 'M';
         }
-
-    }
-
+}
 }

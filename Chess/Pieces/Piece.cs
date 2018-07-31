@@ -24,5 +24,11 @@ namespace Chess.Pieces
             return (firstLetter) + letterRepresentation;
         }
 
+
+        public Piece Copy()
+        {
+            Piece other = (Piece)this.MemberwiseClone();
+            return other;
+        }
     }
 }

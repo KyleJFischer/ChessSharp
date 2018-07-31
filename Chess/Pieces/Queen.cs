@@ -13,7 +13,7 @@ namespace Chess.Pieces
             this.letterRepresentation = 'Q';
             this.maxDiagonalMovement = int.MaxValue;
             this.maxHorizontalMovement = int.MaxValue;
-            this.maxDiagonalMovement = int.MaxValue;
+            this.maxVerticalMovement = int.MaxValue;
         }
 
     }

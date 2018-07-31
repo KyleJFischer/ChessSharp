@@ -29,7 +29,15 @@ namespace Chess
 
             gameBoard.PlacePiece(centerPiece, 4, 4);
 
-            gameBoard.printBoard();
+
+        }
+
+        public Game(Piece piece, int x, int y)
+        {
+
+            SetupOverallBoard();
+
+            gameBoard.PlacePiece(piece, x, y);
 
         }
 
@@ -99,7 +107,7 @@ namespace Chess
         public bool MovePiece(Piece attackingPiece, int x, int y, out Piece defendingPiece)
         {
             defendingPiece = null;
-            var listOfMoves = attackingPiece.GetListOfMoves();
+            var listOfMoves = GetPiecesValidMoves(attackingPiece);
             var validMove = false;
             foreach (var move in listOfMoves)
             {
@@ -118,6 +126,11 @@ namespace Chess
                 }
 
                 this.gameBoard.PlacePiece(attackingPiece, x, y);
+                if (attackingPiece.letterRepresentation == 'P')
+                {
+                    ((Pawn)attackingPiece).hasMoved = true;
+                }
+
                 return true;
             }
             else
@@ -161,9 +174,21 @@ namespace Chess
         public List<Move> GetPiecesValidMoves(Piece piece)
         {
             var moves = new List<Move>();
-            moves.AddRange(GetHorizontalMoves(piece));
-            moves.AddRange(GetVerticalMoves(piece));
-            moves.AddRange(GetDiagonalMoves(piece));
+            switch (piece.letterRepresentation)
+            {
+                case 'N':
+                    moves.AddRange(GetKnightMovement((Knight)piece));
+                    break;
+                case 'P':
+                    moves.AddRange(GetPawnMovement((Pawn)piece));
+                    break;
+                default:
+                    moves.AddRange(GetHorizontalMoves(piece));
+                    moves.AddRange(GetVerticalMoves(piece));
+                    moves.AddRange(GetDiagonalMoves(piece));
+                    break;
+            }
+
             return moves;
         }
 
@@ -405,6 +430,19 @@ namespace Chess
         {
             Move move = null; 
 
+            if (x < 0 || x > 7)
+            {
+                capturedPiece = null;
+                return null;
+            }
+
+            if (y < 0 || y > 7)
+            {
+                capturedPiece = null;
+                return null;
+            }
+
+
             if (piece.yPostion == y && piece.xPostion == x)
             {
                 capturedPiece = null;
@@ -436,13 +474,169 @@ namespace Chess
             }
         }
 
-        public List<Move> GetKnightMovement(Piece piece)
+        public List<Move> GetKnightMovement(Knight piece)
         {
             var moves = new List<Move>();
 
             
+            var xPosition1 = piece.xPostion + 2;
+            var yPosition1 = piece.yPostion + 1;
+            var move = GetMoveIfPossible(piece, xPosition1, yPosition1, out Piece capturedPiece);
 
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+            var xPosition2 = piece.xPostion + 2;
+            var yPosition2 = piece.yPostion - 1;
+
+            move = GetMoveIfPossible(piece, xPosition2, yPosition2, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+            var xPosition3 = piece.xPostion - 2;
+            var yPosition3 = piece.yPostion + 1;
+
+            move = GetMoveIfPossible(piece, xPosition3, yPosition3, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+            var xPosition4 = piece.xPostion - 2;
+            var yPosition4 = piece.yPostion - 1;
+
+
+            move = GetMoveIfPossible(piece, xPosition4, yPosition4, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+
+            var xPosition5 = piece.xPostion + 1;
+            var yPosition5 = piece.yPostion + 2;
+
+
+            move = GetMoveIfPossible(piece, xPosition5, yPosition5, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+
+            var xPosition6 = piece.xPostion + 1;
+            var yPosition6 = piece.yPostion - 2;
+
+
+            move = GetMoveIfPossible(piece, xPosition6, yPosition6, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+
+            var xPosition7 = piece.xPostion - 1;
+            var yPosition7 = piece.yPostion + 2;
+
+            move = GetMoveIfPossible(piece, xPosition7, yPosition7, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+            var xPosition8 = piece.xPostion - 1;
+            var yPosition8 = piece.yPostion - 2;
+
+
+            move = GetMoveIfPossible(piece, xPosition8, yPosition8, out capturedPiece);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+
+            return moves;
         }
 
+        public List<Move> GetPawnMovement(Pawn piece)
+        {
+            var moves = new List<Move>();
+            var newyPosition = piece.yPostion + 1;
+
+            var move = GetMoveIfPossible(piece, piece.xPostion, newyPosition, out Piece captured);
+
+            if (move != null)
+            {
+                moves.Add(move);
+            }
+
+            var rightAttack = piece.xPostion + 1;
+            move = GetMoveIfPossible(piece, rightAttack, newyPosition, out captured);
+
+            if (move != null && captured != null)
+            {
+                moves.Add(move);
+            }
+
+            var leftAttack = piece.yPostion - 1;
+            move = GetMoveIfPossible(piece, leftAttack, newyPosition, out captured);
+
+            if (move != null && captured != null)
+            {
+                moves.Add(move);
+            }
+
+
+            if (!piece.hasMoved)
+            {
+                newyPosition = piece.xPostion + 2;
+
+                move = GetMoveIfPossible(piece, piece.xPostion, newyPosition, out captured);
+
+                if (move != null)
+                {
+                    moves.Add(move);
+                }
+            }
+
+
+
+            return moves;
+        }
+
+        public Board CreateMoveBoard(Piece piece, List<Move> moves)
+        {
+            Board board = new Board();
+            Piece moveBoardPiece = piece.Copy();
+            board.PlacePiece(moveBoardPiece, piece.xPostion, piece.yPostion);
+
+            foreach(var item in moves)
+            {
+                var movePiece = new MovePiece(piece.isWhite);
+                board.PlacePiece(movePiece, item.xMove, item.yMove);
+            }
+            return board;
+        }
+
+        public void AddPieceToBoard(Piece piece, int x, int y)
+        {
+            gameBoard.PlacePiece(piece, x, y);
+        }
+
+        public void PrintBoard()
+        {
+            gameBoard.printBoard();
+        }
     }
 }

@@ -28,25 +28,25 @@ namespace Chess
 
         public void printBoard()
         {
-            int counter = 0;
-            string thingToPrint = "";
-            foreach(var piece in grid)
-            {
-                counter++;
-                if (piece == null)
-                {
-                    thingToPrint += "  |";
-                } else
-                {
-                    thingToPrint += piece.ToString() + "|";
 
-                }
-                if (counter == 8)
+            for (int y = 0; y < 8; y++)
+            {
+                var thingToPrint = "|";
+                for (int x = 0; x < 8; x++)
                 {
-                    Console.WriteLine(thingToPrint);
-                    thingToPrint = "";
-                    counter = 0;
+                    var piece = GetPiece(x, y);
+
+                    if (piece == null)
+                    {
+                        thingToPrint += "  |";
+                    } else
+                    {
+                        var whiteOrBlack = piece.isWhite ? "W" : "B";
+                        thingToPrint += $"{whiteOrBlack}{piece.letterRepresentation}|";
+                    }
                 }
+                Console.WriteLine(thingToPrint);
+                
             }
         }
     }
