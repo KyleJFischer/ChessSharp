@@ -15,15 +15,5 @@ namespace Chess.Pieces
             this.maxVerticalMovement = int.MaxValue;
         }
 
-        public override List<Move> GetListOfMoves()
-        {
-            var moves = new List<Move>();
-
-            moves.AddRange(GetHorizontalMoves(int.MaxValue));
-            moves.AddRange(GetVerticalMoves(int.MaxValue));
-
-            return moves;
-        }
-
     }
 }

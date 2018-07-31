@@ -11,20 +11,10 @@ namespace Chess.Pieces
             this.isWhite = isWhite;
             this.pointValue = 9;
             this.letterRepresentation = 'Q';
+            this.maxDiagonalMovement = int.MaxValue;
+            this.maxHorizontalMovement = int.MaxValue;
+            this.maxDiagonalMovement = int.MaxValue;
         }
-
-
-        public override List<Move> GetListOfMoves()
-        {
-            var moves = new List<Move>();
-
-            moves.AddRange(GetHorizontalMoves(int.MaxValue));
-            moves.AddRange(GetVerticalMoves(int.MaxValue));
-            moves.AddRange(GetDiagonalMoves(int.MaxValue));
-
-            return moves;
-        }
-
 
     }
 }

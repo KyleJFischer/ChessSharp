@@ -14,7 +14,6 @@ namespace Chess
             grid = new Piece[8, 8];
         }
 
-
         public void PlacePiece(Piece piece, int x, int y)
         {
             grid[x, y] = piece;

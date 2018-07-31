@@ -11,29 +11,47 @@ namespace Chess
         List<Piece> whiteGraveyard;
         List<Piece> blackGraveyard;
 
-        int totalInWhiteGraveYard = 0;
-        int totalInBlackGraveYard = 0;
-
         public Game()
         {
+            SetupOverallBoard();
+            SetupPawns();
+            SetupBackrow();
+
+            gameBoard.printBoard();
+            
+        }
+
+        public Game(Piece centerPiece)
+        {
+            //mainly for testing moves
+            
+            SetupOverallBoard();
+
+            gameBoard.PlacePiece(centerPiece, 4, 4);
+
+            gameBoard.printBoard();
+
+        }
+
+        internal void SetupPawns()
+        {
+            SetupRowOfPawns(1, true);
+            SetupRowOfPawns(6, false);
+        }
+
+        internal void SetupBackrow()
+        {
+            SetupBackRowPieces(0, true);
+            SetupBackRowPieces(7, false);
+
+        }
+
+        internal void SetupOverallBoard()
+        {
             gameBoard = new Board();
-            //SetupRowOfPawns(1, true);
-            //SetupRowOfPawns(6, false);
-            //SetupBackRowPieces(0, true);
-            //SetupBackRowPieces(7, false);
-
-            var rook = new Rook(true);
-
-            gameBoard.PlacePiece(rook, 4, 4);
-            var pawn = new Pawn(false);
-
-            gameBoard.PlacePiece(pawn, 4, 2);
-
             whiteGraveyard = new List<Piece>();
             blackGraveyard = new List<Piece>();
-            
-            gameBoard.printBoard();
-            printMoves(GetPiecesValidMoves(rook));
+
         }
 
         internal void SetupRowOfPawns(int row, bool whitePawns)
@@ -154,9 +172,9 @@ namespace Chess
             var moves = new List<Move>();
             var piecesX = piece.xPostion;
             var piecesY = piece.yPostion;
-            int currentDistance = 1;
+            int currentDistance = 0;
             //Horizontal to The Right
-            while (currentDistance < piece.maxHorizontalMovement)
+            while (currentDistance <= piece.maxHorizontalMovement)
             {
                 var newSpot = piecesX + currentDistance;
 
@@ -165,55 +183,44 @@ namespace Chess
                     break;
                 }
 
-                var whatsAtSpot = gameBoard.GetPiece(newSpot, piecesY);
+                var move = GetMoveIfPossible(piece, newSpot, piece.yPostion, out Piece capturedPiece);
 
-                if (whatsAtSpot == null)
+                if (move != null)
                 {
-                    var move = new Move(piece, newSpot, piecesY);
                     moves.Add(move);
                 }
-                else
+
+                if (capturedPiece != null)
                 {
-                    if (!arePiecesSameColor(piece, whatsAtSpot))
-                    {
-                        var move = new Move(piece, newSpot, piecesY);
-                        moves.Add(move);
-                    }
                     break;
                 }
 
                 currentDistance++;
             }
-            currentDistance = -1;
+            currentDistance = 0;
 
-            while (currentDistance > -piece.maxHorizontalMovement)
+            while (currentDistance <= piece.maxHorizontalMovement)
             {
-                var newSpot = piecesX + currentDistance;
+                var newSpot = piecesX - currentDistance;
 
-                if (newSpot <= 0)
+                if (newSpot < 0)
                 {
                     break;
                 }
 
-                var whatsAtSpot = gameBoard.GetPiece(newSpot, piecesY);
+                var move = GetMoveIfPossible(piece, newSpot, piece.yPostion, out Piece capturedPiece);
 
-                if (whatsAtSpot == null)
+                if (move != null)
                 {
-                    var move = new Move(piece, newSpot, piecesY);
                     moves.Add(move);
                 }
-                else
-                {
-                    if (!arePiecesSameColor(piece, whatsAtSpot))
-                    {
-                        var move = new Move(piece, newSpot, piecesY);
-                        moves.Add(move);
-                    }
-                    break;
 
+                if (capturedPiece != null)
+                {
+                    break;
                 }
 
-                currentDistance--;
+                currentDistance++;
             }
             return moves;
         }
@@ -228,9 +235,9 @@ namespace Chess
             var moves = new List<Move>();
             var piecesX = piece.xPostion;
             var piecesY = piece.yPostion;
-            int currentDistance = 1;
+            int currentDistance = 0;
             //Horizontal to The Right
-            while (currentDistance < piece.maxVerticalMovement)
+            while (currentDistance <= piece.maxVerticalMovement)
             {
                 var newSpot = piecesY + currentDistance;
 
@@ -239,56 +246,44 @@ namespace Chess
                     break;
                 }
 
-                var whatsAtSpot = gameBoard.GetPiece(piecesX, newSpot);
+                var move = GetMoveIfPossible(piece, piece.xPostion, newSpot, out Piece capturedPiece);
 
-                if (whatsAtSpot == null)
+                if (move != null)
                 {
-                    var move = new Move(piece, piecesX, newSpot);
                     moves.Add(move);
                 }
-                else
-                {
-                    if (!arePiecesSameColor(piece, whatsAtSpot))
-                    {
-                        var move = new Move(piece, piecesX, newSpot);
-                        moves.Add(move);
 
-                    }
+                if (capturedPiece != null)
+                {
                     break;
                 }
 
                 currentDistance++;
             }
-            currentDistance = -1;
+            currentDistance = 0;
 
-            while (currentDistance > -piece.maxVerticalMovement)
+            while (currentDistance <= piece.maxVerticalMovement)
             {
-                var newSpot = piecesY + currentDistance;
+                var newSpot = piecesY - currentDistance;
 
-                if (newSpot <= 0)
+                if (newSpot < 0)
                 {
                     break;
                 }
 
-                var whatsAtSpot = gameBoard.GetPiece(piecesX, newSpot);
+                var move = GetMoveIfPossible(piece, piece.xPostion, newSpot, out Piece capturedPiece);
 
-                if (whatsAtSpot == null)
+                if (move != null)
                 {
-                    var move = new Move(piece, piecesX, newSpot);
                     moves.Add(move);
                 }
-                else
+
+                if (capturedPiece != null)
                 {
-                    if (!arePiecesSameColor(piece, whatsAtSpot))
-                    {
-                        var move = new Move(piece, piecesX, newSpot);
-                        moves.Add(move);
-                       
-                    }
                     break;
                 }
 
-                currentDistance--;
+                currentDistance++;
             }
             return moves;
         }
@@ -298,62 +293,139 @@ namespace Chess
             var moves = new List<Move>();
             var piecesX = piece.xPostion;
             var piecesY = piece.yPostion;
-            int currentDistance = 1;
+            int currentDistance = 0;
             
-            while (currentDistance < piece.maxVerticalMovement)
+            while (currentDistance <= piece.maxDiagonalMovement)
             {
-                var newSpot = piecesY + currentDistance;
+                var placeX = currentDistance + piece.xPostion;
+                var placeY = currentDistance + piece.yPostion;
 
-                if (newSpot >= 8)
+                if (placeX > 7 || placeY > 7)
                 {
                     break;
                 }
+                var move = GetMoveIfPossible(piece, placeX, placeY, out Piece capturedPiece);
 
-                var whatsAtSpot = gameBoard.GetPiece(piecesX, newSpot);
-
-                if (whatsAtSpot == null)
+                if (move != null)
                 {
-                    var move = new Move(piece, piecesX, newSpot);
+                    moves.Add(move);
                 }
-                else
+
+                if (capturedPiece != null)
                 {
                     break;
                 }
 
                 currentDistance++;
             }
-            currentDistance = -1;
 
-            while (currentDistance > -piece.maxVerticalMovement)
+            currentDistance = 0;
+
+            while (currentDistance <= piece.maxDiagonalMovement)
             {
-                var newSpot = piecesY + currentDistance;
+                var placeX = currentDistance + piece.xPostion;
+                var placeY = piece.yPostion - currentDistance;
 
-                if (newSpot <= 0)
+                if (placeX > 7 || placeY < 0)
+                {
+                    break;
+                }
+                var move = GetMoveIfPossible(piece, placeX, placeY, out Piece capturedPiece);
+
+                if (move != null)
+                {
+                    moves.Add(move);
+                }
+
+                if (capturedPiece != null)
                 {
                     break;
                 }
 
-                var whatsAtSpot = gameBoard.GetPiece(piecesX, newSpot);
+                currentDistance++;
+            }
 
-                if (whatsAtSpot == null)
+            currentDistance = 0;
+
+            while (currentDistance <= piece.maxDiagonalMovement)
+            {
+                var placeX = piece.xPostion - currentDistance;
+                var placeY = piece.yPostion - currentDistance;
+
+                if (placeX < 0 || placeY < 0)
                 {
-                    var move = new Move(piece, piecesX, newSpot);
+                    break;
                 }
-                else
+                var move = GetMoveIfPossible(piece, placeX, placeY, out Piece capturedPiece);
+
+                if (move != null)
+                {
+                    moves.Add(move);
+                }
+
+                if (capturedPiece != null)
                 {
                     break;
                 }
 
-                currentDistance--;
+                currentDistance++;
             }
 
-            if (piece.letterRepresentation != 'P')
+            currentDistance = 0;
+
+            while (currentDistance <= piece.maxDiagonalMovement)
             {
+                var placeX = piece.xPostion - currentDistance;
+                var placeY = piece.yPostion + currentDistance;
 
+                if (placeX < 0 || placeY >= 8)
+                {
+                    break;
+                }
+                var move = GetMoveIfPossible(piece, placeX, placeY, out Piece capturedPiece);
+
+                if (move != null)
+                {
+                    moves.Add(move);
+                }
+
+                if (capturedPiece != null)
+                {
+                    break;
+                }
+
+                currentDistance++;
             }
-            
+
 
             return moves;
+        }
+
+        internal Move GetMoveIfPossible(Piece piece, int x, int y, out Piece capturedPiece)
+        {
+            Move move = null; 
+
+            if (piece.yPostion == y && piece.xPostion == x)
+            {
+                capturedPiece = null;
+                return null;
+            }
+
+            capturedPiece = gameBoard.GetPiece(x, y);
+
+            if (capturedPiece == null)
+            {
+                move = new Move(piece, x, y);
+                
+            }
+            else
+            {
+                if (!arePiecesSameColor(piece, capturedPiece))
+                {
+                    move = new Move(piece, x, y);
+                }
+            }
+            return move;
         }
 
         public void printMoves(List<Move> list)
@@ -363,5 +435,14 @@ namespace Chess
                 Console.WriteLine(item.ToString());
             }
         }
+
+        public List<Move> GetKnightMovement(Piece piece)
+        {
+            var moves = new List<Move>();
+
+            
+
+        }
+
     }
 }

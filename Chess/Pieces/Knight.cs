@@ -12,12 +12,9 @@ namespace Chess.Pieces
             this.isWhite = isWhite;
             this.pointValue = 3;
             this.letterRepresentation = 'N';
+            this.hasCustomMovement = true;
         }
 
-        public override List<Move> GetListOfMoves()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }

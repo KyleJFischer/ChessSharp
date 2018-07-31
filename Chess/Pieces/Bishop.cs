@@ -13,14 +13,5 @@ namespace Chess.Pieces
             this.letterRepresentation = 'B';
             this.maxDiagonalMovement = int.MaxValue;
         }
-
-        public override List<Move> GetListOfMoves()
-        {
-            var moves = new List<Move>();
-
-            moves.AddRange(GetDiagonalMoves(int.MaxValue));
-
-            return moves;
-        }
     }
 }

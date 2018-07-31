@@ -16,10 +16,5 @@ namespace Chess.Pieces
             this.maxDiagonalMovement = 1;
         }
 
-        public override List<Move> GetListOfMoves()
-        {
-            var moves = new List<Move>();
-            return moves;
-        }
     }
 }
