@@ -21,6 +21,12 @@ namespace Chess
             piece.yPostion = y;
         }
 
+        public void MovePiece(Piece piece, int x, int y)
+        {
+            grid[piece.xPostion, piece.yPostion] = null;
+            PlacePiece(piece, x, y);
+        }
+
         public Piece GetPiece(int x, int y)
         {
             return grid[x, y];
@@ -31,7 +37,7 @@ namespace Chess
 
             for (int y = 0; y < 8; y++)
             {
-                var thingToPrint = "|";
+                var thingToPrint = $"{y}|";
                 for (int x = 0; x < 8; x++)
                 {
                     var piece = GetPiece(x, y);
@@ -48,6 +54,7 @@ namespace Chess
                 Console.WriteLine(thingToPrint);
                 
             }
+            Console.WriteLine(" | 0| 1| 2| 3| 4| 5| 6| 7");
         }
     }
 }

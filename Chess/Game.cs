@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Chess.Pieces;
 
@@ -11,14 +12,13 @@ namespace Chess
         List<Piece> whiteGraveyard;
         List<Piece> blackGraveyard;
 
+        public bool WhitesTurn = true;
+
         public Game()
         {
             SetupOverallBoard();
             SetupPawns();
             SetupBackrow();
-
-            gameBoard.printBoard();
-            
         }
 
         public Game(Piece centerPiece)
@@ -125,12 +125,12 @@ namespace Chess
                     PutPieceInGraveyard(defendingPiece);
                 }
 
-                this.gameBoard.PlacePiece(attackingPiece, x, y);
+                this.gameBoard.MovePiece(attackingPiece, x, y);
                 if (attackingPiece.letterRepresentation == 'P')
                 {
                     ((Pawn)attackingPiece).hasMoved = true;
                 }
-
+                this.WhitesTurn = !attackingPiece.isWhite;
                 return true;
             }
             else
@@ -572,7 +572,10 @@ namespace Chess
         public List<Move> GetPawnMovement(Pawn piece)
         {
             var moves = new List<Move>();
-            var newyPosition = piece.yPostion + 1;
+
+            var colorMultiplier = piece.isWhite ? 1 : -1;
+
+            var newyPosition = piece.yPostion + 1*colorMultiplier;
 
             var move = GetMoveIfPossible(piece, piece.xPostion, newyPosition, out Piece captured);
 
@@ -581,7 +584,7 @@ namespace Chess
                 moves.Add(move);
             }
 
-            var rightAttack = piece.xPostion + 1;
+            var rightAttack = piece.xPostion + 1 * colorMultiplier;
             move = GetMoveIfPossible(piece, rightAttack, newyPosition, out captured);
 
             if (move != null && captured != null)
@@ -589,7 +592,7 @@ namespace Chess
                 moves.Add(move);
             }
 
-            var leftAttack = piece.yPostion - 1;
+            var leftAttack = piece.yPostion - 1 * colorMultiplier;
             move = GetMoveIfPossible(piece, leftAttack, newyPosition, out captured);
 
             if (move != null && captured != null)
@@ -600,7 +603,7 @@ namespace Chess
 
             if (!piece.hasMoved)
             {
-                newyPosition = piece.xPostion + 2;
+                newyPosition = piece.yPostion + 2 * colorMultiplier;
 
                 move = GetMoveIfPossible(piece, piece.xPostion, newyPosition, out captured);
 
@@ -629,6 +632,58 @@ namespace Chess
             return board;
         }
 
+        internal List<Piece> getListOfPieces()
+        {
+            List<Piece> list = new List<Piece>();
+            foreach(var item in gameBoard.grid)
+            {
+                if (item != null)
+                {
+                    list.Add(item);
+                }
+            }
+            return list;
+        }
+
+        public List<Piece> GetAllColorsPiece(bool isWhite)
+        {
+            return getListOfPieces().Where(m => m.isWhite == isWhite).ToList();
+        }
+
+        public bool isStalemate()
+        {
+            return GetAllPossibleMoves(this.WhitesTurn).Count == 0;
+        }
+
+        public List<Move> GetAllPossibleMoves(bool isWhite)
+        {
+            var items = GetAllColorsPiece(this.WhitesTurn);
+            var moves = new List<Move>();
+            foreach(var piece in items)
+            {
+                moves.AddRange(this.GetPiecesValidMoves(piece));
+            }
+            return moves;
+        }
+
+        public int DetermineWinner()
+        {
+            var listOfAllPiece = getListOfPieces();
+
+            var kings = listOfAllPiece.Where(m => m.letterRepresentation == 'K');
+
+            if (kings.Count() == 2)
+            {
+                return 0;
+            }
+            if (kings.Count() == 1)
+            {
+                return kings.First().isWhite ? 1 : -1;
+            }
+            return int.MaxValue;
+        }
+
+        //Reduntant but needed
         public void AddPieceToBoard(Piece piece, int x, int y)
         {
             gameBoard.PlacePiece(piece, x, y);
@@ -637,6 +692,11 @@ namespace Chess
         public void PrintBoard()
         {
             gameBoard.printBoard();
+        }
+
+        public Piece GetPiece(int x, int y)
+        {
+            return gameBoard.GetPiece(x, y);
         }
     }
 }
